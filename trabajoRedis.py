@@ -37,3 +37,25 @@ barco_1 = baseDatosRedis.get('barco_1')
 print(f"Barco 1: {barco_1}")
 
 # 5 - Eliminar una clave-valor y mostrar la clave y el valor eliminado(0.5 puntos)
+
+baseDatosRedis.delete('barco_1')
+barco_1 = baseDatosRedis.get('barco_1')
+
+# Mostrar el resultado
+print(f"Barco 1: {barco_1}")
+
+# 6 - Obtener y mostrar todas las claves guardadas (0.5 puntos)
+
+claves = baseDatosRedis.keys('*')
+
+# Mostrar el resultado
+print(f"Claves: {claves}")
+
+# 7 - Obtener y mostrar todos los valores guardados(0.5 puntos)
+
+valores = baseDatosRedis.mget(claves)
+
+# Mostrar el resultado
+print(f"Valores: {valores}")
+
+# 8 - Obtener y mostrar varios registros con una clave con un patrón en común usando * (0.5 puntos)
