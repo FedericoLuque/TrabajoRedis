@@ -12,7 +12,7 @@ baseDatosRedis.set('barco_3', 'SeaGuardian')
 baseDatosRedis.set('barco_4', 'AquaClean')
 baseDatosRedis.set('barco_5', 'ClearSea')
 baseDatosRedis.set('barco_6', 'WaveKeepers')
-baseDatosRedis.set('barco_7', 'EcoMarine')
+baseDatosRedis.set('barco_7', 'ClearSea')
 
 # 2 - Obtener y mostrar el número de claves registradas (0.5 puntos)
 
@@ -59,3 +59,50 @@ valores = baseDatosRedis.mget(claves)
 print(f"Valores: {valores}")
 
 # 8 - Obtener y mostrar varios registros con una clave con un patrón en común usando * (0.5 puntos)
+
+claves = baseDatosRedis.keys('barco_*')
+
+# Mostrar el resultado
+print(f"Claves con *: {claves}")
+
+# 9 - Obtener y mostrar varios registros con una clave con un patrón en común usando [] (0.5 puntos)
+
+claves = baseDatosRedis.keys('barco_[2-6]')
+
+# Mostrar el resultado
+print(f"Claves de barcos del 2 al 6: {claves}")
+print(f"Valores: {valores}")
+
+# 10 - Obtener y mostrar varios registros con una clave con un patrón en común usando ? (0.5 puntos)
+
+claves = baseDatosRedis.keys('barco_?')
+
+# Mostrar el resultado
+print(f"Claves de barcos con ?: {claves}")
+print(f"Valores: {valores}")
+
+# 11 - Obtener y mostrar varios registros y filtrarlos por un valor en concreto. (0.5 puntos)
+
+claves = baseDatosRedis.keys('*')
+
+# Filtrar por un valor en concreto
+filtro = 'ClearSea'
+claves_filtradas = [claves[i] for i in range(len(claves)) if valores[i] == filtro]
+
+# Mostrar el resultado
+print(f"Claves con el valor {filtro}: {claves_filtradas}")
+
+# 12 - Actualizar una serie de registros en base a un filtro (por ejemplo aumentar su valor en 1 )(0.5 puntos)
+
+# Actualizar los valores
+for clave in claves:
+    valor = baseDatosRedis.get(clave)  # Obtener el valor actual
+    if "AquaClean" in valor:  # Filtrar por nombre de barco
+        mod = valor.replace("AquaClean", "Perdido")  # Cambiar "AquaClean" por "Perdido"
+        baseDatosRedis.set(clave, mod)  # Actualizar el valor
+
+# Mostrar el resultado
+valores = baseDatosRedis.mget(claves)
+print(f"Valores actualizados: {valores}")
+
+# 13 - Eliminar una serie de registros en base a un filtro (0.5 puntos)
