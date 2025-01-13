@@ -1,3 +1,7 @@
+#Ejecutar docker run -d --name mi_redis -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+#Ejecutar docker exec -it mi_redis bash
+
+
 import redis
 
 # Conexion
@@ -106,3 +110,101 @@ valores = baseDatosRedis.mget(claves)
 print(f"Valores actualizados: {valores}")
 
 # 13 - Eliminar una serie de registros en base a un filtro (0.5 puntos)
+
+# Eliminar los registros
+for clave in claves:
+    valor = baseDatosRedis.get(clave)  # Obtener el valor actual
+    if "Perdido" in valor:  # Filtrar por nombre de barco
+        baseDatosRedis.delete(clave)
+
+# Mostrar el resultado
+claves = baseDatosRedis.keys('*')
+valores = baseDatosRedis.mget(claves)
+print(f"Claves: {claves}")
+print(f"Valores: {valores}")
+
+# 14 - Crear una estructura en JSON de array de los datos que vayais a almacenar(0.5 puntos)
+
+import json
+
+# Crear la estructura en JSON
+datos = {
+    "barcos": [
+        {"nombre": "BlueWave"},
+        {"nombre": "OceanSweepers"},
+        {"nombre": "SeaGuardian"},
+        {"nombre": "AquaClean"},
+        {"nombre": "ClearSea"},
+        {"nombre": "WaveKeepers"}
+    ]
+}
+
+# Convertir a JSON
+datos_json = json.dumps(datos)
+
+# Mostrar el resultado
+print(f"Datos en JSON: {datos_json}")
+
+# 15 - Realizar un filtro por cada atributo de la estructura JSON anterior (0.5 puntos)
+
+# Filtrar por cada atributo
+filtro = "AquaClean"
+barcos = datos["barcos"]
+barcos_filtrados = [barco for barco in barcos if filtro in barco["nombre"]]
+print(f"Barcos con {filtro}: {barcos_filtrados}")
+
+# 16 - Crear una lista en Redis (0.5 puntos)
+
+# Crear la lista
+baseDatosRedis.rpush('barcos', 'BlueWave')
+baseDatosRedis.rpush('barcos', 'OceanSweepers')
+baseDatosRedis.rpush('barcos', 'SeaGuardian')
+baseDatosRedis.rpush('barcos', 'AquaClean')
+baseDatosRedis.rpush('barcos', 'ClearSea')
+baseDatosRedis.rpush('barcos', 'WaveKeepers')
+
+#imprimir la lista
+lista = baseDatosRedis.lrange('barcos', 0, -1)
+print(f"Lista de barcos: {lista}")
+
+# 17 - Obtener elementos de una lista con un filtro en concreto(0.5 puntos)
+
+# Filtrar por un valor en concreto
+filtro = 'ClearSea'
+barcos_filtrados = [barco for barco in lista if filtro in barco]
+print(f"Barcos con {filtro}: {barcos_filtrados}")
+
+# 18 - En Redis hay otras formas de almacenar datos: Set, Hashes, SortedSet,Streams, Geopatial, Bitmaps, Bitfields,Probabilistic y Time Series. Elige dos de estos tipos, y crea una función que los guarde en la base de datos y otra que los obtenga. (1.5 puntos)
+
+# Set
+def guardar_set():
+    baseDatosRedis.sadd('barcos_set', 'BlueWave')
+    baseDatosRedis.sadd('barcos_set', 'OceanSweepers')
+    baseDatosRedis.sadd('barcos_set', 'SeaGuardian')
+    baseDatosRedis.sadd('barcos_set', 'AquaClean')
+    baseDatosRedis.sadd('barcos_set', 'ClearSea')
+    baseDatosRedis.sadd('barcos_set', 'WaveKeepers')
+
+def obtener_set():
+    barcos_set = baseDatosRedis.smembers('barcos_set')
+    print(f"Barcos en set: {barcos_set}")
+
+guardar_set()
+obtener_set()
+
+# Hashes
+
+def guardar_hash():
+    baseDatosRedis.hset('barcos_hash', 'barco_1', 'BlueWave')
+    baseDatosRedis.hset('barcos_hash', 'barco_2', 'OceanSweepers')
+    baseDatosRedis.hset('barcos_hash', 'barco_3', 'SeaGuardian')
+    baseDatosRedis.hset('barcos_hash', 'barco_4', 'AquaClean')
+    baseDatosRedis.hset('barcos_hash', 'barco_5', 'ClearSea')
+    baseDatosRedis.hset('barcos_hash', 'barco_6', 'WaveKeepers')
+
+def obtener_hash():
+    barcos_hash = baseDatosRedis.hgetall('barcos_hash')
+    print(f"Barcos en hash: {barcos_hash}")
+
+guardar_hash()
+obtener_hash()
